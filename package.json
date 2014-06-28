@@ -1,0 +1,27 @@
+{
+  "name": "koansRxJS",
+  "version": "0.0.1",
+  "description": "Learn Reactive Extensions for JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BerkeleyTrue/koansRxJS.git"
+  },
+  "keywords": [
+    "rx",
+    "rxjs",
+    "koans"
+  ],
+  "author": "Berkeley Martinez <berkeley@robotie.com> (http://robotie.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BerkeleyTrue/koansRxJS/issues"
+  },
+  "homepage": "https://github.com/BerkeleyTrue/koansRxJS",
+  "dependencies": {
+    "rx": "^2.2.27"
+  }
+}

@@ -1,3 +1,4 @@
+node_modules
 #################
 ## Eclipse
 #################
@@ -169,3 +170,6 @@ pip-log.txt
 *.log
 
 Doc/Decoding.synctex.gz
+
+**/testit.*.js
+node_modules
