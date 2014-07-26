@@ -1,4 +1,16 @@
-module('Lesson 2 - Composable Observations');
+/* globals describe, it, expect */
+'use strict';
+
+var
+    Rx      = require('rx'),
+    expect  = require('chai').expect
+;
+
+/**
+ * Adds should method to Object.prototype
+ * Also returns should Object that can be used with primitives
+ */
+require('chai').should();
 
 /*
  * Step 1: find the 1st method that fails
@@ -6,77 +18,94 @@ module('Lesson 2 - Composable Observations');
  * Step 3: run it again
  * Note: Do not change anything other than the blank
  */
- 
-test('ComposableAddition', function() {
-    var received = 0;
-    var numbers = [10, 100, 1000/*_______*/];
-    numbers
-        .toObservable()
-        .sum()
-        .subscribe(function(x) { received = x; });
-    equals(received, 1110);
-});
-  
- test('ComposeableBeforeAndAfter', function() {
-    var names = Range.create(1, 6),
-        a = '',
-        b = '';
-    names
-        .toObservable()
+
+describe('Lesson 2 - Composable Observations', function () {
+  it('ComposableAddition', function() {
+      var received = 0;
+      Rx.Observable
+        .fromArray([10, 100, 1000]).sum()
+        .subscribe(function(x) { received = x; })
+      ;
+      received.should.equal(1110);
+  });
+
+  it('ComposeableBeforeAndAfter', function() {
+      var
+          a = '',
+          b = ''
+      ;
+      Rx.Observable
+        .range(1, 6)
         .doAction(function(n) { a += n.toString(); })
         .where(function(n) { return n % 2 === 0; })
         .doAction(function(n) { b += n.toString(); })
         .subscribe();
-    equals(a, '123456'/*_______*/);
-    equals(b, '246');
-});
- 
-test('WeWroteThis', function() {
-    var received = [];
-    var names = ['Bart', 'Wes', 'Erik', 'Matthew', 'Brian'];
-    names
-        .toObservable()
-        .where(function(n) { return n.length <= 4/*_______*/; })
-        .subscribe(function(x) { received.push(x); });
-    equals(received.toString(), 'Bart,Wes,Erik');    
-});
- 
-test('ConvertingEvents', function() {
-    var received = '';
-    var names = ['wE', 'hOpE', 'yOU', 'aRe', 'eNJoyIng', 'tHiS' ];
-    names
-        .toObservable()
-        .select(function(x) { return x.toLowerCase()/*_______*/; })
-        .subscribe(function(x) { received += x + ' '; });
-    equals(received, 'we hope you are enjoying this ');
-});
- 
-test('CreatingAMoreRelevantEventStream', function() {
-    var received = '',
-        mouseXMovements = [100, 200, 150],
-        windowTopX = 50,
-        relativemouse = mouseXMovements
-            .toObservable()
-            .select(function(x) { return x - windowTopX/*_______*/; });
-    
-    relativemouse.subscribe(function(x) { received += x + ', '; });
-    equals(received, '50, 150, 100, ');
-});
- 
-test('CheckingEverything', function() {
-    var received = null;
-    var numbers = [ 2, 4, 6, 8 ];
-    numbers
-        .toObservable()
-        .all(function(x) { return x % 2 === 0; })
-        .subscribe(function(x) { received = x; });
-    equals(received, true/*_______*/);
-});
- 
-test('CompositionMeansTheSumIsGreaterThanTheParts', function() {
-    var numbers = Rx.Observable.range(1, 10);
-    numbers
-        .where(function(x) { return x > 8/*_______*/; })
+      a.should.equal('123456');
+      b.should.equal('246');
+  });
+
+  it('WeWroteThis', function() {
+      var received = [];
+      Rx.Observable.fromArray([
+        'BerkeleyTrue',
+        'Bart',
+        'Wes',
+        'Erik',
+        'Matthew',
+        'Brian'
+      ])
+        .where(function(n) { return n.length <= 4; })
+        .subscribe(function(x) { received.push(x); })
+      ;
+      received.toString().should.equal('Bart,Wes,Erik');
+  });
+
+  it('ConvertingEvents', function() {
+      var received = '';
+      Rx.Observable.fromArray([
+        'wE',
+        'hOpE',
+        'yOU',
+        'aRe',
+        'eNJoyIng',
+        'tHiS'
+      ])
+        .select(function(x) { return x.toLowerCase(); })
+        .subscribe(function(x) { received += x + ' '; })
+      ;
+      received.should.equal('we hope you are enjoying this ');
+  });
+
+  it('CreatingAMoreRelevantEventStream', function() {
+      var received = '',
+          mouseXMovements = [100, 200, 150],
+          windowTopX = 50,
+          relativemouse = Rx.Observable
+            .fromArray(mouseXMovements)
+            .select(function(x) { return x - windowTopX; })
+      ;
+
+      relativemouse.subscribe(function(x) { received += x + ', '; });
+      received.should.equal('50, 150, 100, ');
+  });
+
+  it('CheckingEverything', function() {
+      var received = null;
+      var numbers = [ 2, 4, 6, 8 ];
+      Rx.Observable.fromArray(numbers)
+          .all(function(x) { return x % 2 === 0; })
+          .subscribe(function(x) { received = x; });
+      received.should.equal(true);
+  });
+
+  it('CompositionMeansTheSumIsGreaterThanTheParts', function() {
+      var numbers = Rx.Observable.range(1, 10);
+      numbers
+        .where(function(x) { return x > 8; })
         .sum()
-        .subscribe(function(x) { equals(19, x); });
- });
+        .subscribe(function(x) {
+          expect(19).to.equal(x);
+        })
+      ;
+  });
+});

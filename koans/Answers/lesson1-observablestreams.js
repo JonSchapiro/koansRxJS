@@ -1,4 +1,12 @@
-module('Lesson 1 - Observable Streams');
+/* globals describe, it */
+'use strict';
+var rx = require('rx');
+
+/**
+ * Adds should method to Object.prototype
+ * Also returns should Object that can be used with primitives
+ */
+require('chai').should();
 
 /*
  * Step 1: find the 1st method that fails
@@ -6,71 +14,81 @@ module('Lesson 1 - Observable Streams');
  * Step 3: run it again
  * Note: Do not change anything other than the blank
  */
- 
-test('ObjectsFirst', function () {
-    var xs = L2O.Enumerable.fromArray([1, 2, 3]);
-    equals(xs.first(), 1/*_______*/);
 
-    var itsOk = L2O.Enumerable
-        .returnValue(42);
-    equals(itsOk.first(), 42 /*_______*/);
-});
+describe('Lesson 1 - Observable Streams', function () {
+  it('can be used with simple arrays', function () {
+    var arrayStream = rx.Observable.fromArray([1, 2, 3]);
+    arrayStream.first().subscribe(function (x) {
+      x.should.equal(1);
+    });
+  });
 
-test('SimpleSubscription', function() {
-    Rx.Observable
-        .returnValue(42)
-        .subscribe(function(x) { equals(x, 42 /*_______*/); });	
-});
+  it('should work with simple subscription', function() {
+    rx.Observable
+      .returnValue(42)
+      .subscribe(function(x) {
+        x.should.equal(42);
+      })
+    ;
+  });
 
-test('SimpleReturn', function() {
-    var received = '';
-    Rx.Observable
+  it('should return string', function() {
+      var received = '';
+      rx.Observable
         .returnValue('Foo')
         .subscribe(function(x) { received = x; });
-    equals(received, 'Foo'/*_______*/);
-});
+        received.should.equal('Foo')
+      ;
+  });
 
-test('TheLastEvent', function() {
-    var received = '';
-    var numbers = ['Foo','Bar'];
-    Rx.Observable
+  it('should return the last event', function() {
+      var received = '';
+      var numbers = ['Foo','Bar'];
+      rx.Observable
         .fromArray(numbers)
-        .subscribe(function(x) { received = x; });
-    equals(received, 'Bar'/*_______*/);
-});
+        .subscribe(function(x) { received = x; })
+      ;
+      received.should.equal('Bar');
+  });
 
-test('EveryThingCounts', function() {
-    var received = 0;
-    var numbers = [3, 4 ];
-    Rx.Observable
+  it('EveryThingCounts', function() {
+      var received = 0;
+      var numbers = [3, 4 ];
+      rx.Observable
         .fromArray(numbers)
-        .subscribe(function(x) { received += x; });
-    equals(received, 7/*_______*/);	
-});
+        .subscribe(function(x) { received += x; })
+      ;
+      received.should.equal(7);
+  });
 
-test('DoingInTheMiddle', function() {
+  it('DoingInTheMiddle', function() {
     var status = [];
-    var daysTillTest = Range.create(1, 4).reverse().toObservable();
-    daysTillTest
+    var daysTillit = rx.Observable.range(1, 4);
+    daysTillit
+      .doAction(function(d) {
+        status.unshift(
+           d + '=' + (d === 1 ? 'Study Like Mad' : 'Party')
+        );
+      })
+      .subscribe()
+    ;
+    status.toString().should.equal('4=Party,3=Party,2=Party,1=Study Like Mad');
+  });
+
+  it('NothingListensUntilYouSubscribe', function() {
+      var sum = 0;
+      var numbers = rx.Observable
+        .range(1,10)
         .doAction(
-            function(d) { status.push(
-                d + '=' + (d === 1 ? 'Study Like Mad' : 'Party'/*_______*/));
-            })
-        .subscribe();
-	equals(
-            status.toString(),
-            '4=Party,3=Party,2=Party,1=Study Like Mad');
-});
+          function(n) {
+          sum += n;
+        })
+      ;
 
-test('NothingListensUntilYouSubscribe', function() {
-    var sum = 0;
-    var numbers = Range.create(1,10).toObservable();
-    var observable = numbers
-        .doAction(function(n) { sum += n; });
+      sum.should.equal(0);
 
-    equals(0, sum);
-    
-    observable.subscribe/*_______*/();	
+      numbers.subscribe();
 
-    equals(55, sum); 
+      sum.should.equal(55);
+  });
 });

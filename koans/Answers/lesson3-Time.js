@@ -1,5 +1,16 @@
-module('Lesson 3 - Time');
+/* globals describe, it, expect */
+'use strict';
 
+var
+    Rx      = require('rx'),
+    expect  = require('chai').expect
+;
+
+/**
+ * Adds should method to Object.prototype
+ * Also returns should object to be used with primitives
+ */
+require('chai').should();
 /*
  * Step 1: find the 1st method that fails
  * Step 2: Fill in the blank ____ to make it pass
@@ -7,45 +18,57 @@ module('Lesson 3 - Time');
  * Note: Do not change anything other than the blank
  */
 
-asyncTest('LaunchingAnActionInTheFuture', function() {
-    var received = '';
-    var delay = 250/*_______*/;
-    Rx
+describe('Lesson 3 - Time', function () {
+
+  it('LaunchingAnActionInTheFuture', function(done) {
+      var received = '';
+      var delay = 250;
+      Rx
         .Scheduler
         .immediate
-        .schedule(function() { received = 'Finished'; }, delay);
+        .schedule(function() {
+          received = 'Finished';
+        }, delay)
+      ;
+      setTimeout(function() {
+        received.should.equal('Finished');
+        done();
+      }, 500);
+  });
 
-    setTimeout(function() { equals(received, 'Finished'); start(); }, 500);
-});
-
-asyncTest('LaunchingAnEventInTheFuture', function() {
-    var received = '',
-        time = 250/*_______*/;
-        
-    Rx
+  it('LaunchingAnEventInTheFuture', function(done) {
+      var received = '',
+          time = 250;
+      Rx
         .Observable
         .returnValue('Godot', Rx.Scheduler.Immediate)
         .delay(time)
-        .subscribe(function(x) { received = x; });
-    
-    setTimeout(function() { equals(received, 'Godot'); start(); }, 500);
-});
+        .subscribe(function(x) { received = x; })
+      ;
+      setTimeout(function() {
+        received.should.equal('Godot');
+        done();
+      }, 500);
+  });
 
-asyncTest('AWatchedPot', function() {
+  it('AWatchedPot', function(done) {
     var received = '',
-        delay = 500,
-        timeout = 650/*_______*/,
-        timeoutEvent =
-            Rx  .Observable
-                .returnValue('Tepid');
-        
-    Rx
-        .Observable
-        .returnValue('Boiling')
-        .delay(delay)
-        .timeout(timeout, timeoutEvent)
-        .subscribe(function(x) { received = x; });
-    
-    setTimeout(function() { equals(received, 'Boiling'); start(); }, 500);
+      delay = 500,
+      timeout = 650,
+      timeoutEvent =
+        Rx.Observable
+          .returnValue('Tepid')
+    ;
+    Rx.Observable
+      .returnValue('Boiling')
+      .delay(delay)
+      .timeout(timeout, timeoutEvent)
+      .subscribe(function(x) { received = x; })
+    ;
+    setTimeout(function() {
+      received.should.equal('Boiling');
+      done();
+    }, 500);
+  });
+
 });
- 

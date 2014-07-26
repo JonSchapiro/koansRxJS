@@ -1,4 +1,5 @@
-"use strict";
+/* globals test */
+'use strict';
 module('Lesson 1 - Observable Streams');
 
 /*

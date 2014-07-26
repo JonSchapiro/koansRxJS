@@ -1,33 +1,42 @@
-module('Lesson 4 - Events');
+/* globals describe, it */
+'use strict';
 
-test('listening to events', function() {
-    var received = '';
-    var subscription =
-        $(document)
-            .toObservable('foo')
-            .subscribe(function(e) { received += e.payload; });
-    
-    $(document).trigger({ type: 'foo', payload : 'M'});
-    $(document).trigger({ type: 'foo', payload : 'A'});
-    $(document).trigger({ type: 'foo', payload : 'T'});
-    subscription.dispose();
-    $(document).trigger({ type: 'foo', payload : 'T'});
-    
-    equals(received, 'MAT'/*_______*/);
-});
+var Rx = require('rx');
 
-test('listening to the right events', function() {
-    var received = '';
-    var subscription =
-        $(document)
-            .toObservable('foo')
-            .subscribe(function(e) { received += e.payload; });
-    
-    $(document).trigger({ type: 'foo', payload : 'M'});
-    $(document).trigger({ type: 'bar', payload : 'A'});
-    $(document).trigger({ type: 'foo', payload : 'T'});
-    $(document).trigger({ type: 'foo', payload : 'T'});
-    subscription.dispose();
-    
-    equals(received, 'MTT'/*_______*/);
+/**
+ * Adds should method to Object.prototype
+ * Also returns should Object that can be used with primitives
+ */
+require('chai').should();
+
+describe('Lesson 4 - Events', function () {
+
+  it('listening to events', function() {
+      var received = '';
+      var subscription =
+          $(document)
+              .toObservable('foo')
+              .subscribe(function(e) { received += e.payload; });
+      $(document).trigger({ type: 'foo', payload : 'M'});
+      $(document).trigger({ type: 'foo', payload : 'A'});
+      $(document).trigger({ type: 'foo', payload : 'T'});
+      subscription.dispose();
+      $(document).trigger({ type: 'foo', payload : 'T'});
+      received.should.equal('MAT');
+  });
+
+  it('listening to the right events', function() {
+      var received = '';
+      var subscription =
+          $(document)
+              .toObservable('foo')
+              .subscribe(function(e) { received += e.payload; });
+      $(document).trigger({ type: 'foo', payload : 'M'});
+      $(document).trigger({ type: 'bar', payload : 'A'});
+      $(document).trigger({ type: 'foo', payload : 'T'});
+      $(document).trigger({ type: 'foo', payload : 'T'});
+      subscription.dispose();
+      received.should.equal('MTT');
+  });
+
 });

@@ -22,6 +22,10 @@
   },
   "homepage": "https://github.com/BerkeleyTrue/koansRxJS",
   "dependencies": {
+    "chai": "^1.9.1",
+    "gulp": "^3.8.6",
+    "gulp-mocha": "^0.5.1",
+    "mocha": "^1.21.0",
     "rx": "^2.2.27"
   }
 }
